@@ -1,4 +1,4 @@
-
+using Shop.Service;
 using Shop.Data;
 
 namespace ShopAPI
@@ -16,6 +16,8 @@ namespace ShopAPI
             builder.Services.AddOpenApi();
 
             builder.Services.AddDbContext<DatabaseContext>();
+
+            builder.Services.AddTransient(typeof(IService<>), typeof(Service<>));
 
             var app = builder.Build();
 
