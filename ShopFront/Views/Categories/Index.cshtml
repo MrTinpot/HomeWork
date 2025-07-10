@@ -1,0 +1,47 @@
+﻿@using Shop.Core.Entities
+@model Category
+
+@{
+    ViewData["Title"] = Model.Name;
+}
+<style>
+	.card-title {
+		font-size: 2.5rem;
+		font-weight: bold;
+	}
+
+	.card {
+		transition: transform 0.2s cubic-bezier(.4,2,.6,1), box-shadow 0.2s;
+	}
+
+	.card:hover {
+		transform: scale(1.05);
+		box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+	}
+
+	.object-fit-cover {
+		object-fit: cover;
+	}
+
+	.card-img-fixed {
+		height: 15.25rem;
+		width: 100%;
+		object-fit: cover;
+	}
+</style>
+<header class="bg-dark py-5">
+    <div class="container px-4 px-lg-5 my-5">
+        <div class="text-center text-white">
+            <h1 class="display-4 fw-bolder">@Model.Name</h1>
+            <p class="lead fw-normal text-white-50 mb-0">@Model.Description</p>
+        </div>
+    </div>
+</header>
+
+<section class="bg-light bg-gradient py-5">
+    <div class="container px-4 px-lg-5 mt-5">
+        <div class="row gx-4 gx-lg-5 row-cols-2 row-cols-md-3 row-cols-xl-4 justify-content-center">
+            <partial name="_Products" model="Model.Products" />
+        </div>
+    </div>
+</section>

@@ -1,0 +1,85 @@
+﻿@model ShopFront.Models.AccountViewModel
+
+@{
+    ViewData["Title"] = "Hesabım";
+    var orders = Model?.Orders ?? new List<Orders>();
+    var user = Model.User ?? new User();
+}
+<div class="container bg-light bg-gradient py-5">
+<h4>Kullanıcı Bilgilerim</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Index">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="User.Id" />
+                <input type="hidden" asp-for="User.UserGuid" />
+            <div class="form-group">
+                    <label asp-for="User.UserName" class="control-label"></label>
+                    <input asp-for="User.UserName" class="form-control" />
+                <span asp-validation-for="User.UserName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="User.Password" class="control-label"></label>
+                <input asp-for="User.Password" class="form-control" />
+                <span asp-validation-for="User.Password" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="User.Email" class="control-label"></label>
+                <input asp-for="User.Email" class="form-control" />
+                    <span asp-validation-for="User.Email" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                    <label asp-for="User.Name" class="control-label"></label>
+                    <input asp-for="User.Name" class="form-control" />
+                <span asp-validation-for="User.Name" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                    <label asp-for="User.Surname" class="control-label"></label>
+                    <input asp-for="User.Surname" class="form-control" />
+                    <span asp-validation-for="User.Surname" class="text-danger"></span>
+            </div>
+                <div class="form-group">
+                    <label asp-for="User.Adress" class="control-label"></label>
+                    <textarea asp-for="User.Adress" class="form-control"></textarea>
+                    <span asp-validation-for="User.Adress" class="text-danger"></span>
+                </div>
+            <div class="form-group mt-2">
+                <input type="submit" value="Güncelle" class="btn btn-success" />
+            </div>
+        </form>
+    </div>
+
+</div>
+</div>
+@if (orders != null && orders.Any())
+{
+    <h3>Kullanıcı Siparişleri</h3>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Ürün</th>
+                <th>Adet</th>
+                <th>Tarih</th>
+                <th>Durum</th>
+                <th>Birim Fiyat</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var order in orders)
+            {
+                <tr>
+                    <td>@order.Product?.Name</td>
+                    <td>@order.Quantity</td>
+                    <td>@order.OrderDate.ToString("g")</td>
+                    <td>@order.Status</td>
+                    <td>@order.Product?.Price</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+else
+{
+    <div class="alert alert-info">Henüz siparişiniz yok.</div>
+}

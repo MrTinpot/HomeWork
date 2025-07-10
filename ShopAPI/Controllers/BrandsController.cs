@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Shop.Core.Entities;
 using Shop.Data;
 using Shop.Service;
@@ -9,6 +10,7 @@ namespace ShopAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    
     public class BrandsController : ControllerBase
     {
         private readonly IService<Brand> _brandService;
@@ -42,6 +44,7 @@ namespace ShopAPI.Controllers
 
         // POST api/<BrandsController>
         [HttpPost]
+        [Authorize]
         public async Task PostAsync([FromBody] Brand value)
         {
             await _brandService.AddAsync(value);
@@ -50,6 +53,7 @@ namespace ShopAPI.Controllers
 
         // PUT api/<BrandsController>/5
         [HttpPut("{id}")]
+        [Authorize]
         public void Put(int id, [FromBody] Brand value)
         {
             _brandService.Update(value);
@@ -58,6 +62,7 @@ namespace ShopAPI.Controllers
 
         // DELETE api/<BrandsController>/5
         [HttpDelete("{id}")]
+        [Authorize]
         public async Task<IActionResult> Delete(int id)
         {
             var brand = await _brandService.FindAsync(id);

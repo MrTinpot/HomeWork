@@ -1,0 +1,39 @@
+﻿@model IEnumerable<Category>
+<style>
+	.card-title {
+		font-size: 2.5rem;
+		font-weight: bold;
+	}
+
+	.card {
+		transition: transform 0.2s cubic-bezier(.4,2,.6,1), box-shadow 0.2s;
+	}
+
+	.card:hover {
+		transform: scale(1.05);
+		box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+	}
+
+	.object-fit-cover {
+		object-fit: cover;
+	}
+
+	.card-img-fixed {
+		height: 15.25rem; 
+		width: 100%;
+		object-fit: cover;
+	}
+</style>
+@foreach (var anaKategori in Model.Where(c => c.ParentId == 0 && c.IsActive && c.IsTopMenu))
+{
+	<div class="col">
+		<div class="card">
+			<a href="/Categories/Index/@anaKategori.Id">
+				<img class="card-img card-img-fixed" src="/Images/@anaKategori.Image" alt="Card image cap">
+			<div class="card-img-overlay d-flex flex-column justify-content-center align-items-center">
+				<h5 class="card-title text-center display-5 fw-bold text-primary">@anaKategori.Name</h5>
+				</div>
+			</a>
+		</div>
+	</div>
+}

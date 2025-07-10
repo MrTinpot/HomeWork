@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Shop.Core.Entities;
 using Shop.Data;
@@ -7,6 +8,7 @@ namespace UrunSitesi.WebAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    
     public class ProductsController : ControllerBase
     {
         private readonly DatabaseContext _dbContext;
@@ -29,7 +31,8 @@ namespace UrunSitesi.WebAPI.Controllers
         public IEnumerable<Product> Search(string q = "")
         {
             var model = _dbContext.Products
-                .Where(p => p.Name.Contains(q))
+                .Where(p => 
+                p.Name.Contains(q) || p.Category.Name.Contains(q) || p.Brand.Name.Contains(q))
                 .Include(c => c.Category)
                 .Include(c => c.Brand);
             return model;
@@ -51,6 +54,7 @@ namespace UrunSitesi.WebAPI.Controllers
 
         // POST api/<ProductController>
         [HttpPost]
+        [Authorize]
         public async Task PostAsync([FromBody] Product value)
         {
             await _dbContext.Products.AddAsync(value);
@@ -59,6 +63,7 @@ namespace UrunSitesi.WebAPI.Controllers
 
         // PUT api/<ProductController>/5
         [HttpPut("{id}")]
+        [Authorize]
         public void Put(int id, [FromBody] Product value)
         {
             _dbContext.Products.Update(value);
@@ -67,6 +72,7 @@ namespace UrunSitesi.WebAPI.Controllers
 
         // DELETE api/<ProductController>/5
         [HttpDelete("{id}")]
+        [Authorize]
         public async Task<ActionResult> DeleteAsync(int? id)
         {
             if (id == null)

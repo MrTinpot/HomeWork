@@ -1,0 +1,31 @@
+﻿@model ShopFront.Areas.Admin.Models.HomePageViewModel
+@{
+	ViewData["Title"] = "Ana Ekran";
+}
+<div class="row">
+    <div class="col-xl-6">
+        <div class="card mb-4 box-shadow">
+            <div class="card-header">
+                <h4 class="my-0 font-weight-normal">Site Bilgileri</h4>
+            </div>
+            <div class="card-body">
+                <h1 class="card-title">Güncel Bilgiler! </h1>
+                <ul class="list-unstyled mt-3 mb-4">
+                    <li>Üye Sayımız : @Model.TotalUsers</li>
+                    <li>Ürün Sayımız : @Model.TotalProducts</li>
+                    <li>Marka Sayımız : @Model.TotalBrands</li>
+                    <li>Sipariş Sayımız : @Model.TotalOrders</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+<partial name="_orderTable" model="Model.Orders" />
+<partial name="_productList" model="Model.Products" />
+@section scripts {
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.min.js" crossorigin="anonymous"></script>
+    <script src="/admintema/assets/demo/chart-area-demo.js"></script>
+    <script src="/admintema/assets/demo/chart-bar-demo.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/umd/simple-datatables.min.js" crossorigin="anonymous"></script>
+    <script src="/admintema/js/datatables-simple-demo.js"></script>
+}

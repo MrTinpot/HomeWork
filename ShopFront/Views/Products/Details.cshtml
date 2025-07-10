@@ -1,0 +1,119 @@
+﻿@model Product
+
+@{
+    ViewData["Title"] = Model.Name;
+}
+<style>
+    .card-title {
+        font-size: 2.5rem;
+        font-weight: bold;
+    }
+
+    .card {
+        transition: transform 0.2s cubic-bezier(.4,2,.6,1), box-shadow 0.2s;
+    }
+
+    .card:hover {
+        transform: scale(1.05);
+        box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+    }
+
+    .object-fit-cover {
+        object-fit: cover;
+    }
+
+    .card-img-fixed {
+        height: 15.25rem;
+        width: 100%;
+        object-fit: cover;
+    }
+</style>
+<script>
+        document.addEventListener('DOMContentLoaded', function () {
+        document.querySelectorAll('.add-to-cart-form').forEach(function(form) {
+            form.addEventListener('submit', function (e) {
+                e.preventDefault();
+
+                var submitBtn = form.querySelector('button[type="submit"]');
+                if (submitBtn) submitBtn.disabled = true;
+
+                var formData = new FormData(form);
+                fetch(form.action, {
+                    method: 'POST',
+                    body: formData,
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest'
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        var badge = document.querySelector('.bi-cart').nextElementSibling;
+                        if (badge) {
+                            badge.textContent = data.cartCount;
+                            badge.style.display = data.cartCount > 0 ? 'inline-block' : 'none';
+                        }
+                        var stockElem = document.querySelector('h3.small.mb-1');
+                        if (stockElem && typeof data.stock !== 'undefined') {
+                            stockElem.textContent = 'Stokta: ' + data.stock;
+                        }
+                    } else {
+                        alert(data.message || 'Yeterli stok yok.');
+                    }
+                })
+                .finally(() => {
+                    if (submitBtn) submitBtn.disabled = false;
+                });
+            }, { once: true });
+        });
+    });
+</script>
+<section class="bg-light bg-gradient py-5">
+    <div class="container px-4 px-lg-5 my-5">
+        <div class="row gx-4 gx-lg-5 align-items-center">
+            <div class="col-md-6">
+                <img class="card-img-top mb-5 mb-md-0" src="/Images/@Model.Image" alt="@Model.Name" />
+            </div>
+            <div class="col-md-6">
+                <div class="small mb-1">PRD-@Model.Id</div>
+                <small class="text-muted">@Model.Category.Name</small>
+                <h1 class="display-5 fw-bolder">@Model.Name</h1>
+                <h3 class="small mb-1">Stokta: @Model.Stock</h3>
+                <div class="fs-5 mb-5">
+                    @if (Model.Sale == true)
+                    {
+                        <span class="text-muted text-decoration-line-through">@Model.Price.ToString("c")</span>
+                        <div>
+                            @((Model.Price - (Model.Price * Model.SalePercentage / 100)).ToString("c"))
+                        </div>
+                    }
+                    else
+                    {
+                        <span>@Model.Price.ToString("c")</span>
+                    }
+                </div>
+                <div class="d-flex">
+                    <form asp-controller="Cart" asp-action="AddAjax" method="post" class="add-to-cart-form d-flex align-items-center gap py-2">
+                        <input type="hidden" name="productId" value="@Model.Id" />
+                        <input type="number" class="text-center me-3" name="quantity" value="1" min="1" max="@Model.Stock" style="width: 5rem; height:2rem;" />
+                        <button type="submit" class="btn btn-outline-dark flex-shrink-0" @(Model.Stock == 0 ? "disabled" : "")>
+                            <i class="bi-cart-fill me-1"></i> Sepete Ekle
+                        </button>
+                    </form>
+                </div>
+                <p class="lead">
+                    @Model.Description
+                </p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="py-5 bg-light">
+    <div class="container px-4 px-lg-5 mt-5">
+        <h2 class="fw-bolder mb-4">Benzer Ürünler</h2>
+        <div class="row gx-4 gx-lg-5 row-cols-2 row-cols-md-3 row-cols-xl-4 justify-content-center">
+            <partial name="_Products" model="ViewBag.Products" />
+        </div>
+    </div>
+</section>

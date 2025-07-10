@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Shop.Core.Entities;
 using Shop.Service;
 
@@ -8,6 +9,7 @@ namespace ShopAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    
     public class CategoriesController : ControllerBase
     {
         private readonly IService<Category> _CategoryService;
@@ -39,6 +41,7 @@ namespace ShopAPI.Controllers
         }
         // POST api/<CategoriesController>
         [HttpPost]
+        [Authorize]
         public async Task PostAsync([FromBody] Category value)
         {
             await _CategoryService.AddAsync(value);
@@ -48,6 +51,7 @@ namespace ShopAPI.Controllers
 
         // PUT api/<CategoriesController>/5
         [HttpPut("{id}")]
+        [Authorize]
         public void Put(int id, [FromBody] Category value)
         {
             _CategoryService.Update(value);
@@ -56,6 +60,7 @@ namespace ShopAPI.Controllers
 
         // DELETE api/<CategoriesController>/5
         [HttpDelete("{id}")]
+        [Authorize]
         public async Task<IActionResult> Delete(int id)
         {
             var cate = await _CategoryService.FindAsync(id);

@@ -1,0 +1,74 @@
+﻿@model HomePageViewModel
+<style>
+	.card-title {
+		font-size: 2.5rem;
+		font-weight: bold;
+	}
+
+	.card {
+		transition: transform 0.2s cubic-bezier(.4,2,.6,1), box-shadow 0.2s;
+	}
+
+	.card:hover {
+		transform: scale(1.05);
+		box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+	}
+
+	.object-fit-cover {
+		object-fit: cover;
+
+	}
+
+	.card-img-fixed {
+		height: 15.25rem; /* or any height you prefer */
+		width: 100%;
+		object-fit: cover;
+	}
+</style>
+@{
+	ViewData["Title"] = "Anasayfa";
+}
+<div class="container-fluid mt-3 bg-light">
+	<div class="row align-items-stretch">
+		<div class="col-md-3 p-0">
+			<div class="photo-banner h-100">
+				<img class="img-fluid object-fit-cover" src="/Images/Aradgn_urunlerde.png" alt="Alternate Text" />
+			</div>
+		</div>
+		<div class="col-md-9">
+			<div class="slide-banner mb-4">
+				<partial name="_Carousel" model="Model.Sliders" />
+			</div>
+			<div class="row row-cols-1 row-cols-md-3 g-4">
+				<partial name="_Cards" model="Model.Categories" />
+			</div>
+		</div>
+	</div>
+</div>
+
+
+
+<section class="py-5 bg-light bg-gradient">
+	<div class="container px-4 px-lg-5 mt-5">
+		<h2><i class="bi bi-award-fill"></i> Özel Seçimlerimiz</h2>
+		<div class="row gx-4 gx-lg-5 row-cols-2 row-cols-md-3 row-cols-xl-4 justify-content-center">
+			<partial name="_Products" model="Model.Products.Where(p => p.IsActive && p.IsHome)" />
+		</div>
+	</div>
+</section>
+
+<section class="py-5 bg-light bg-gradient">
+	<div class="container px-4 px-lg-5 mt-5">
+		<h2><i class="bi bi-boxes"></i> En Yeni Ürünlerimiz</h2>
+		<div class="row gx-4 gx-lg-5 row-cols-2 row-cols-md-3 row-cols-xl-4 justify-content-center">
+			<partial name="_Products" model="Model.Products.Where(p => p.IsActive).OrderByDescending(x => x.Id).Take(4)" />
+		</div>
+	</div>
+</section>
+
+@section Scripts {
+	<script>
+		//console.log("scripts çalışıyor"); // not: section Scripts partialde çalışmıyor! indexde çalışıyor.
+		$("#carouselExampleCaptions .carousel-item:first").addClass("active")
+	</script>
+}

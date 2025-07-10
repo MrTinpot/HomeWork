@@ -1,40 +1,61 @@
-using Shop.Service;
+using System.Text;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
 using Shop.Data;
+using Shop.Service;
 
-namespace ShopAPI
+
+var builder = WebApplication.CreateBuilder(args);
+
+// Add services to the container.
+
+builder.Services.AddControllers().AddJsonOptions(options =>
 {
-    public class Program
+options.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.IgnoreCycles;
+});
+// Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
+builder.Services.AddOpenApi();
+
+builder.Services.AddDbContext<DatabaseContext>();
+
+builder.Services.AddControllers()
+.AddJsonOptions(options =>
+{
+options.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.IgnoreCycles;
+});
+
+builder.Services.AddTransient(typeof(IService<>), typeof(Service<>));
+
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(opt =>
+{
+    opt.TokenValidationParameters = new TokenValidationParameters
     {
-        public static void Main(string[] args)
-        {
-            var builder = WebApplication.CreateBuilder(args);
+        // Token = Jeton
+        //Validasyon yapmak istediðimiz alanlar
+        ValidateAudience = true, // Kitleyi Doðrula
+        ValidateIssuer = true, // Tokený vereni doðrula
+        ValidateLifetime = true, // Token yaþam süresini doðrula
+        ValidateIssuerSigningKey = true, // Tokený verenin imzalama anahtarini Doðrula
+        ValidIssuer = builder.Configuration["Token:Issuer"], // Tokený veren saglayici
+        ValidAudience = builder.Configuration["Token:Audience"], // Tokený kullanacak kullanici
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Token:SecurityKey"])), // Tokený imzalama Anahtari
+        ClockSkew = TimeSpan.Zero // saat farký olmasýn
+    };
+});
 
-            // Add services to the container.
+var app = builder.Build();
 
-            builder.Services.AddControllers();
-            // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
-            builder.Services.AddOpenApi();
-
-            builder.Services.AddDbContext<DatabaseContext>();
-
-            builder.Services.AddTransient(typeof(IService<>), typeof(Service<>));
-
-            var app = builder.Build();
-
-            // Configure the HTTP request pipeline.
-            if (app.Environment.IsDevelopment())
-            {
-                app.MapOpenApi();
-            }
-
-            app.UseHttpsRedirection();
-
-            app.UseAuthorization();
-
-
-            app.MapControllers();
-
-            app.Run();
-        }
-    }
+// Configure the HTTP request pipeline.
+if (app.Environment.IsDevelopment())
+{
+    app.MapOpenApi();
 }
+
+app.UseHttpsRedirection();
+
+app.UseAuthorization();
+
+
+app.MapControllers();
+
+app.Run();

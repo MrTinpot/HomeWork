@@ -127,6 +127,42 @@ namespace Shop.Data.Migrations
                     b.ToTable("Contacts");
                 });
 
+            modelBuilder.Entity("Shop.Core.Entities.Orders", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("OrderDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("ProductId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Quantity")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("isActive")
+                        .HasColumnType("bit");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ProductId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Orders");
+                });
+
             modelBuilder.Entity("Shop.Core.Entities.Product", b =>
                 {
                     b.Property<int>("Id")
@@ -165,6 +201,12 @@ namespace Shop.Data.Migrations
 
                     b.Property<decimal>("Price")
                         .HasColumnType("decimal(18,2)");
+
+                    b.Property<bool>("Sale")
+                        .HasColumnType("bit");
+
+                    b.Property<int>("SalePercentage")
+                        .HasColumnType("int");
 
                     b.Property<int>("Stock")
                         .HasColumnType("int");
@@ -213,6 +255,10 @@ namespace Shop.Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<string>("Adress")
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
                     b.Property<DateTime>("CreateDate")
                         .HasColumnType("datetime2");
 
@@ -240,6 +286,12 @@ namespace Shop.Data.Migrations
                         .HasMaxLength(15)
                         .HasColumnType("nvarchar(15)");
 
+                    b.Property<string>("RefreshToken")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("RefreshTokenExpireDate")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("Surname")
                         .IsRequired()
                         .HasMaxLength(50)
@@ -261,7 +313,7 @@ namespace Shop.Data.Migrations
                         new
                         {
                             Id = 1,
-                            CreateDate = new DateTime(2025, 6, 22, 21, 47, 7, 179, DateTimeKind.Local).AddTicks(2657),
+                            CreateDate = new DateTime(2025, 7, 9, 22, 48, 40, 56, DateTimeKind.Local).AddTicks(4083),
                             Email = "admin@admin.com",
                             IsActive = true,
                             IsAdmin = true,
@@ -269,9 +321,28 @@ namespace Shop.Data.Migrations
                             Password = "admin",
                             Phone = "",
                             Surname = "test",
-                            UserGuid = new Guid("0c82910d-7c59-4cd9-953f-fc1e45156925"),
+                            UserGuid = new Guid("a90b7c23-dc6b-431b-aaef-717dfdfc2b9d"),
                             UserName = "adminuser"
                         });
+                });
+
+            modelBuilder.Entity("Shop.Core.Entities.Orders", b =>
+                {
+                    b.HasOne("Shop.Core.Entities.Product", "Product")
+                        .WithMany()
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Shop.Core.Entities.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Product");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Shop.Core.Entities.Product", b =>

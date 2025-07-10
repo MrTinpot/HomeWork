@@ -37,5 +37,9 @@ namespace Shop.Core.Entities
         public int BrandId { get; set; }
         [Display(Name = "Marka")]
         public Brand? Brand { get; set; }
+        [Display(Name = "İndirimli Ürün")]
+        public bool Sale { get; set; } = false; // İndirimli ürünler için kullanılabilir, varsayılan olarak false
+        [Display(Name = "İndirim Yüzdesi")]
+        public int SalePercentage { get; set; } = 1; // İndirim yüzdesi, varsayılan olarak 1
     }
 }
